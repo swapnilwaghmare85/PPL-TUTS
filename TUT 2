@@ -1,0 +1,98 @@
+package code;
+
+import java.util.*;
+
+public class ArrayOperations {
+
+    private static int length = 5;
+    private static int numbers[] = {6, 2, 5, 1, 4};
+    private static int maxValue;
+    private static int minValue;
+    private static int keyValue = 6;
+
+    // Display Array
+    public void showArray() {
+        System.out.print("Array Elements : [ ");
+        for (int i = 0; i < length; i++) {
+            System.out.print(numbers[i] + " ");
+        }
+        System.out.println("]");
+    }
+
+    // Sort Array
+    public void arrangeArray() {
+        Arrays.sort(numbers);
+
+        maxValue = numbers[length - 1];
+        minValue = numbers[0];
+    }
+
+    // Find Missing Number
+    public void calculateMissing() {
+
+        int totalExpected = (maxValue * (maxValue + 1)) / 2;
+        int totalActual = 0;
+
+        for (int i = 0; i < length; i++) {
+            totalActual += numbers[i];
+        }
+
+        int missing = totalExpected - totalActual;
+
+        System.out.println("Missing Number : " + missing);
+    }
+
+    // Search Element
+    public void checkElement() {
+
+        boolean isPresent = false;
+
+        for (int i = 0; i < length; i++) {
+            if (numbers[i] == keyValue) {
+                isPresent = true;
+                System.out.println("Element " + keyValue + " found at position : " + i);
+                break;
+            }
+        }
+
+        if (!isPresent) {
+            System.out.println("Element " + keyValue + " not present in array.");
+        }
+    }
+
+    // Find Pair with Given Sum
+    public void findSumPair() {
+
+        int pairTarget = 7;
+
+        System.out.println("Searching pairs with sum = " + pairTarget);
+
+        for (int i = 0; i < length; i++) {
+            for (int j = 0; j < length; j++) {
+                if (numbers[i] + numbers[j] == pairTarget) {
+                    System.out.println("Pair Found : (" + numbers[i] + ", " + numbers[j] + ")");
+                }
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+
+        ArrayOperations obj = new ArrayOperations();
+
+        System.out.println("Original Array");
+        obj.showArray();
+
+        obj.arrangeArray();
+
+        System.out.println("\nSorted Array");
+        obj.showArray();
+
+        System.out.println("Maximum Value : " + maxValue);
+        System.out.println("Minimum Value : " + minValue);
+
+        obj.calculateMissing();
+        obj.checkElement();
+        obj.findSumPair();
+    }
+}
