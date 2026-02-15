@@ -1,0 +1,83 @@
+package code;
+
+public class Learner {
+
+    private String studentName;
+    private int rollNumber;
+    private float scores[];
+    private float averageScore;
+
+    public void assignName(String n) {
+        studentName = n;
+    }
+
+    public void assignRollNumber(int r) {
+        rollNumber = r;
+    }
+
+    public void assignScores(float s[]) {
+        scores = s;
+    }
+
+    public void printName() {
+        System.out.println("Name        : " + studentName);
+    }
+
+    public void printRollNumber() {
+        System.out.println("Roll No     : " + rollNumber);
+    }
+
+    public void printScores() {
+        System.out.print("Marks Scored: { ");
+        for (int i = 0; i < scores.length; i++) {
+            System.out.print(scores[i]);
+            if (i < scores.length - 1) {
+                System.out.print(", ");
+            }
+        }
+        System.out.println(" }");
+    }
+
+    public void showResult(float data[]) {
+
+        System.out.println("STUDENT REPORT\n");
+
+        printName();
+        printRollNumber();
+        printScores();
+
+        float total = 0.0f;
+
+        for (int i = 0; i < data.length; i++) {
+            total += data[i];
+        }
+
+        averageScore = total / data.length;
+
+        System.out.println("\nAverage Score : " + averageScore);
+
+        checkResult();
+    }
+
+    public void checkResult() {
+
+        if (averageScore < 50) {
+            System.out.println("Result Status : FAIL");
+        } else {
+            System.out.println("Result Status : PASS");
+        }
+    }
+
+    public static void main(String[] args) {
+
+        Learner studentObj = new Learner();
+
+        float marksArray[] = {95, 97, 94, 96, 85};
+
+        studentObj.assignName("Swapnil");
+        studentObj.assignRollNumber(1085);
+        studentObj.assignScores(marksArray);
+
+        studentObj.showResult(marksArray);
+    }
+}
