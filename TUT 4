@@ -1,0 +1,170 @@
+import java.util.*;
+
+// Base Class
+class VehicleBase {
+
+    String category;
+    int rentalDays;
+    double basePrice;
+
+    VehicleBase(String category, double basePrice) {
+        this.category = category;
+        this.basePrice = basePrice;
+    }
+
+    protected int computeBill() {
+        return (int) basePrice * rentalDays;
+    }
+
+    void showDetails() {
+        // will be overridden
+    }
+}
+
+// Car Class
+class CarRental extends VehicleBase {
+
+    CarRental(String category, double basePrice) {
+        super(category, basePrice);
+    }
+
+    public void assignDays(int d) {
+        rentalDays = d;
+    }
+
+    @Override
+    void showDetails() {
+        System.out.println("\nVehicle Category : CAR");
+        System.out.println("Model Type       : " + category);
+        System.out.println("Rate Per Day     : " + basePrice);
+        System.out.println("Number of Days   : " + rentalDays);
+    }
+}
+
+// Bike Class
+class BikeRental extends VehicleBase {
+
+    BikeRental(String category, double basePrice) {
+        super(category, basePrice);
+    }
+
+    public void assignDays(int d) {
+        rentalDays = d;
+    }
+
+    @Override
+    void showDetails() {
+        System.out.println("\nVehicle Category : BIKE");
+        System.out.println("Model Type       : " + category);
+        System.out.println("Rate Per Day     : " + basePrice);
+        System.out.println("Number of Days   : " + rentalDays);
+    }
+}
+
+// Truck Class
+class TruckRental extends VehicleBase {
+
+    TruckRental(String category, double basePrice) {
+        super(category, basePrice);
+    }
+
+    public void assignDays(int d) {
+        rentalDays = d;
+    }
+
+    @Override
+    void showDetails() {
+        System.out.println("\nVehicle Category : TRUCK");
+        System.out.println("Model Type       : " + category);
+        System.out.println("Rate Per Day     : " + basePrice);
+        System.out.println("Number of Days   : " + rentalDays);
+    }
+}
+
+// Main Class
+public class RentalApplication {
+
+    public static void main(String[] args) {
+
+        Scanner input = new Scanner(System.in);
+
+        int option;
+        String modelName;
+        double pricePerDay;
+        int totalDays;
+
+        System.out.println("******** VEHICLE RENTAL MENU ********");
+        System.out.println("1 -> Car");
+        System.out.println("2 -> Bike");
+        System.out.println("3 -> Truck");
+        System.out.print("Enter your choice: ");
+
+        option = input.nextInt();
+        input.nextLine();
+
+        switch (option) {
+
+            case 1:
+                System.out.print("Enter car model: ");
+                modelName = input.nextLine();
+
+                System.out.print("Enter daily rent: ");
+                pricePerDay = input.nextDouble();
+                input.nextLine();
+
+                CarRental carObj = new CarRental(modelName, pricePerDay);
+
+                System.out.print("Enter rental duration (days): ");
+                totalDays = input.nextInt();
+                input.nextLine();
+
+                carObj.assignDays(totalDays);
+                carObj.showDetails();
+                System.out.println("Total Amount Payable : " + carObj.computeBill());
+                break;
+
+            case 2:
+                System.out.print("Enter bike model: ");
+                modelName = input.nextLine();
+
+                System.out.print("Enter daily rent: ");
+                pricePerDay = input.nextDouble();
+                input.nextLine();
+
+                BikeRental bikeObj = new BikeRental(modelName, pricePerDay);
+
+                System.out.print("Enter rental duration (days): ");
+                totalDays = input.nextInt();
+                input.nextLine();
+
+                bikeObj.assignDays(totalDays);
+                bikeObj.showDetails();
+                System.out.println("Total Amount Payable : " + bikeObj.computeBill());
+                break;
+
+            case 3:
+                System.out.print("Enter truck model: ");
+                modelName = input.nextLine();
+
+                System.out.print("Enter daily rent: ");
+                pricePerDay = input.nextDouble();
+                input.nextLine();
+
+                TruckRental truckObj = new TruckRental(modelName, pricePerDay);
+
+                System.out.print("Enter rental duration (days): ");
+                totalDays = input.nextInt();
+                input.nextLine();
+
+                truckObj.assignDays(totalDays);
+                truckObj.showDetails();
+                System.out.println("Total Amount Payable : " + truckObj.computeBill());
+                break;
+
+            default:
+                System.out.println("Invalid selection. Please restart.");
+        }
+
+        input.close();
+    }
+}
