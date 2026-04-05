@@ -1,0 +1,95 @@
+import java.util.*; 
+class Expense { 
+    String category; 
+    double amount; 
+    String date; 
+    Expense(String cate, double amt, String dt) { 
+        category = cate; 
+        amount = amt; 
+        date = dt; 
+    } 
+    public String toString() { 
+        return "Category: " + category + " Amount: " + amount + " Date: " + date; 
+    } 
+} 
+ 
+class ExpenseTracker { 
+    private ArrayList<Expense> expenses = new ArrayList<>(); 
+    // Add Expense 
+    public void addExpense(String category, double amount, String date) { 
+        expenses.add(new Expense(category, amount, date)); 
+    } 
+    // View All Expenses 
+    public void viewExpenses() { 
+        System.out.println("------ All Expenses ------"); 
+        for (int i = 0; i < expenses.size(); i++) { 
+            System.out.println(i + " : " + expenses.get(i)); 
+        } 
+    } 
+ 
+    // Delete Expense 
+    public void deleteExpense(int index) { 
+        if (index >= 0 && index < expenses.size()) { 
+            expenses.remove(index); 
+            System.out.println("Expense Deleted"); 
+        } else { 
+            System.out.println("Invalid Index"); 
+        } 
+    } 
+    // Total Summary Report 
+    public void totalSummaryGenerate() { 
+        HashMap<String, Double> categoryTotal = new HashMap<>(); 
+        double total = 0.0; 
+        for (int i = 0; i < expenses.size(); i++) { 
+            Expense e = expenses.get(i); 
+            total += e.amount; 
+            categoryTotal.put(e.category,categoryTotal.getOrDefault(e.category, 0.0) + e.amount); 
+        } 
+ 
+        System.out.println("\n====== TOTAL EXPENSE SUMMARY ======"); 
+        System.out.println("Total Expense: " + total); 
+        System.out.println("Category Wise Expenses:"); 
+        ArrayList<String> categories = new ArrayList<>(categoryTotal.keySet()); 
+        for (int i = 0; i < categories.size(); i++) { 
+            String cat = categories.get(i); 
+            System.out.println(cat + " : " + categoryTotal.get(cat)); 
+        } 
+    } 
+ 
+    // Monthly Report 
+    public void monthlyReport(String monthYear) { 
+        HashMap<String, Double> categoryTotal = new HashMap<>(); 
+        double total = 0.0; 
+        for (int i = 0; i < expenses.size(); i++) { 
+            Expense e = expenses.get(i); 
+            if (e.date.endsWith(monthYear)) { 
+                total += e.amount; 
+                categoryTotal.put(e.category,categoryTotal.getOrDefault(e.category, 0.0) + e.amount); 
+            } 
+        } 
+        System.out.println("\n====== MONTHLY REPORT (" + monthYear + ") ======"); 
+        System.out.println("Total Expense: " + total); 
+        ArrayList<String> categories = new ArrayList<>(categoryTotal.keySet()); 
+ 
+        for (int i = 0; i < categories.size(); i++) { 
+            String cat = categories.get(i); 
+            System.out.println(cat + " : " + categoryTotal.get(cat)); 
+        } 
+    } 
+} 
+ 
+public class ExpenseTrackerSystem { 
+    public static void main(String[] args) { 
+        ExpenseTracker tracker = new ExpenseTracker(); 
+        tracker.addExpense("Food", 700.0, "12/06/2025"); 
+        tracker.addExpense("Transport", 500.0, "02/06/2025"); 
+        tracker.addExpense("Electricity", 800.0, "15/06/2025"); 
+        tracker.addExpense("Food", 300.0, "01/04/2026"); 
+ 
+        tracker.viewExpenses(); 
+        tracker.deleteExpense(1); 
+        tracker.viewExpenses(); 
+        tracker.totalSummaryGenerate(); 
+tracker.monthlyReport("06/2025"); 
+} 
+}
