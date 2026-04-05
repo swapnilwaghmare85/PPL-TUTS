@@ -1,0 +1,106 @@
+import java.util.*;
+
+class Expense {
+    String category;
+    double amount;
+    String date;
+
+    Expense(String c, double a, String d) {
+        category = c;
+        amount = a;
+        date = d;
+    }
+
+    public String toString() {
+        return category + " | ₹" + amount + " | " + date;
+    }
+}
+
+class ExpenseTracker {
+
+    ArrayList<Expense> list = new ArrayList<>();
+
+    // add expense
+    void add(String cat, double amt, String date) {
+        list.add(new Expense(cat, amt, date));
+    }
+
+    // show all
+    void showAll() {
+        System.out.println("\n--- Expenses ---");
+        for (int i = 0; i < list.size(); i++) {
+            System.out.println(i + " -> " + list.get(i));
+        }
+    }
+
+    // delete
+    void remove(int index) {
+        if (index >= 0 && index < list.size()) {
+            list.remove(index);
+            System.out.println("Deleted successfully");
+        } else {
+            System.out.println("Wrong index");
+        }
+    }
+
+    // total summary
+    void summary() {
+        HashMap<String, Double> map = new HashMap<>();
+        double total = 0;
+
+        for (Expense e : list) {
+            total += e.amount;
+            map.put(e.category, map.getOrDefault(e.category, 0.0) + e.amount);
+        }
+
+        System.out.println("\n=== TOTAL SUMMARY ===");
+        System.out.println("Total = ₹" + total);
+
+        for (String key : map.keySet()) {
+            System.out.println(key + " : ₹" + map.get(key));
+        }
+    }
+
+    // monthly report
+    void monthly(String month) {
+        HashMap<String, Double> map = new HashMap<>();
+        double total = 0;
+
+        for (Expense e : list) {
+            if (e.date.endsWith(month)) {
+                total += e.amount;
+                map.put(e.category, map.getOrDefault(e.category, 0.0) + e.amount);
+            }
+        }
+
+        System.out.println("\n=== MONTH (" + month + ") ===");
+        System.out.println("Total = ₹" + total);
+
+        for (String key : map.keySet()) {
+            System.out.println(key + " : ₹" + map.get(key));
+        }
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+
+        ExpenseTracker t = new ExpenseTracker();
+
+        // sample data
+        t.add("Food", 700, "12/06/2025");
+        t.add("Transport", 500, "02/06/2025");
+        t.add("Electricity", 800, "15/06/2025");
+        t.add("Food", 300, "01/04/2026");
+
+        t.showAll();
+
+        t.remove(1);   // delete transport
+
+        t.showAll();
+
+        t.summary();
+
+        t.monthly("06/2025");
+    }
+}
