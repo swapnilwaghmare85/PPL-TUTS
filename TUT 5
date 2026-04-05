@@ -1,95 +1,166 @@
-import java.util.*; 
-class Expense { 
-    String category; 
-    double amount; 
-    String date; 
-    Expense(String cate, double amt, String dt) { 
-        category = cate; 
-        amount = amt; 
-        date = dt; 
-    } 
-    public String toString() { 
-        return "Category: " + category + " Amount: " + amount + " Date: " + date; 
-    } 
-} 
- 
-class ExpenseTracker { 
-    private ArrayList<Expense> expenses = new ArrayList<>(); 
-    // Add Expense 
-    public void addExpense(String category, double amount, String date) { 
-        expenses.add(new Expense(category, amount, date)); 
-    } 
-    // View All Expenses 
-    public void viewExpenses() { 
-        System.out.println("------ All Expenses ------"); 
-        for (int i = 0; i < expenses.size(); i++) { 
-            System.out.println(i + " : " + expenses.get(i)); 
-        } 
-    } 
- 
-    // Delete Expense 
-    public void deleteExpense(int index) { 
-        if (index >= 0 && index < expenses.size()) { 
-            expenses.remove(index); 
-            System.out.println("Expense Deleted"); 
-        } else { 
-            System.out.println("Invalid Index"); 
-        } 
-    } 
-    // Total Summary Report 
-    public void totalSummaryGenerate() { 
-        HashMap<String, Double> categoryTotal = new HashMap<>(); 
-        double total = 0.0; 
-        for (int i = 0; i < expenses.size(); i++) { 
-            Expense e = expenses.get(i); 
-            total += e.amount; 
-            categoryTotal.put(e.category,categoryTotal.getOrDefault(e.category, 0.0) + e.amount); 
-        } 
- 
-        System.out.println("\n====== TOTAL EXPENSE SUMMARY ======"); 
-        System.out.println("Total Expense: " + total); 
-        System.out.println("Category Wise Expenses:"); 
-        ArrayList<String> categories = new ArrayList<>(categoryTotal.keySet()); 
-        for (int i = 0; i < categories.size(); i++) { 
-            String cat = categories.get(i); 
-            System.out.println(cat + " : " + categoryTotal.get(cat)); 
-        } 
-    } 
- 
-    // Monthly Report 
-    public void monthlyReport(String monthYear) { 
-        HashMap<String, Double> categoryTotal = new HashMap<>(); 
-        double total = 0.0; 
-        for (int i = 0; i < expenses.size(); i++) { 
-            Expense e = expenses.get(i); 
-            if (e.date.endsWith(monthYear)) { 
-                total += e.amount; 
-                categoryTotal.put(e.category,categoryTotal.getOrDefault(e.category, 0.0) + e.amount); 
-            } 
-        } 
-        System.out.println("\n====== MONTHLY REPORT (" + monthYear + ") ======"); 
-        System.out.println("Total Expense: " + total); 
-        ArrayList<String> categories = new ArrayList<>(categoryTotal.keySet()); 
- 
-        for (int i = 0; i < categories.size(); i++) { 
-            String cat = categories.get(i); 
-            System.out.println(cat + " : " + categoryTotal.get(cat)); 
-        } 
-    } 
-} 
- 
-public class ExpenseTrackerSystem { 
-    public static void main(String[] args) { 
-        ExpenseTracker tracker = new ExpenseTracker(); 
-        tracker.addExpense("Food", 700.0, "12/06/2025"); 
-        tracker.addExpense("Transport", 500.0, "02/06/2025"); 
-        tracker.addExpense("Electricity", 800.0, "15/06/2025"); 
-        tracker.addExpense("Food", 300.0, "01/04/2026"); 
- 
-        tracker.viewExpenses(); 
-        tracker.deleteExpense(1); 
-        tracker.viewExpenses(); 
-        tracker.totalSummaryGenerate(); 
-tracker.monthlyReport("06/2025"); 
-} 
+import java.util.Scanner;
+
+// ----- Custom Exceptions -----
+
+class BookNotFoundException extends Exception {
+    BookNotFoundException(String msg) {
+        super(msg);
+    }
+}
+
+class BookAlreadyCheckedOutException extends Exception {
+    BookAlreadyCheckedOutException(String msg) {
+        super(msg);
+    }
+}
+
+class InvalidReturnDateException extends Exception {
+    InvalidReturnDateException(String msg) {
+        super(msg);
+    }
+}
+
+// ----- Book Class -----
+
+class Book {
+    String title;
+    boolean issued;
+
+    Book(String title) {
+        this.title = title;
+        this.issued = false;
+    }
+}
+
+// ----- Library Class -----
+
+class Library {
+
+    Book[] books = new Book[5];
+    int total = 0;
+
+    void addBook(Book b) {
+        if (total < books.length) {
+            books[total] = b;
+            total++;
+        } else {
+            System.out.println("Library is full, can't add more books.");
+        }
+    }
+
+    void issueBook(String name)
+            throws BookNotFoundException, BookAlreadyCheckedOutException {
+
+        Book b = null;
+
+        for (int i = 0; i < total; i++) {
+            if (books[i].title.equalsIgnoreCase(name)) {
+                b = books[i];
+                break;
+            }
+        }
+
+        if (b == null) {
+            throw new BookNotFoundException("Book not found: " + name);
+        }
+
+        if (b.issued) {
+            throw new BookAlreadyCheckedOutException("Book already issued!");
+        }
+
+        b.issued = true;
+        System.out.println("Book issued: " + b.title);
+    }
+
+    void returnBook(String name, int days)
+            throws BookNotFoundException, InvalidReturnDateException {
+
+        if (days < 0) {
+            throw new InvalidReturnDateException("Invalid days entered.");
+        }
+
+        Book b = null;
+
+        for (int i = 0; i < total; i++) {
+            if (books[i].title.equalsIgnoreCase(name)) {
+                b = books[i];
+                break;
+            }
+        }
+
+        if (b == null) {
+            throw new BookNotFoundException("Book not found: " + name);
+        }
+
+        if (!b.issued) {
+            System.out.println("This book wasn't issued.");
+            return;
+        }
+
+        b.issued = false;
+        System.out.println("Book returned: " + b.title);
+
+        if (days > 0) {
+            int fine = days * 10;
+            System.out.println("Fine = ₹" + fine);
+        }
+    }
+}
+
+// ----- Main Class -----
+
+public class LibBook {
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+        Library lib = new Library();
+
+        // adding some books
+        lib.addBook(new Book("Java Programming"));
+        lib.addBook(new Book("Python Basics"));
+        lib.addBook(new Book("Data Structures"));
+
+        int choice;
+
+        do {
+            System.out.println("\n--- MENU ---");
+            System.out.println("1. Issue Book");
+            System.out.println("2. Return Book");
+            System.out.println("3. Exit");
+            System.out.print("Enter choice: ");
+
+            choice = sc.nextInt();
+            sc.nextLine(); // consume newline
+
+            try {
+
+                if (choice == 1) {
+                    System.out.print("Enter book name: ");
+                    String name = sc.nextLine();
+                    lib.issueBook(name);
+
+                } else if (choice == 2) {
+                    System.out.print("Enter book name: ");
+                    String name = sc.nextLine();
+
+                    System.out.print("Days late: ");
+                    int d = sc.nextInt();
+
+                    lib.returnBook(name, d);
+
+                } else if (choice == 3) {
+                    System.out.println("Bye!");
+                } else {
+                    System.out.println("Wrong choice.");
+                }
+
+            } catch (Exception e) {
+                System.out.println("Error: " + e.getMessage());
+            }
+
+        } while (choice != 3);
+
+        sc.close();
+    }
 }
