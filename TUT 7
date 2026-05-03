@@ -1,0 +1,197 @@
+import java.io.*; 
+import java.util.ArrayList; 
+import java.util.Scanner; 
+class Student { 
+String name; 
+int rno; 
+double avg_marks; 
+String grade; 
+Student(String name, int rno, double avg_marks, String grade) { 
+this.name = name; 
+this.rno = rno; 
+this.avg_marks = avg_marks; 
+this.grade = grade; 
+} 
+public String toString() { 
+return name + ", " + rno + ", " + avg_marks + ", " + grade; 
+} 
+} 
+class Record { 
+private ArrayList<Student> list = new ArrayList<>(); 
+// Add record 
+public void addRecord(String name, int rno, double avg_marks, String grade) { 
+list.add(new Student(name, rno, avg_marks, grade)); 
+System.out.println("Record added: Name: " + name + "| Roll_no: " + rno + "| Avg_marks: " + 
+avg_marks + "| Grade: " + grade); 
+} 
+// View records with simple headers 
+public void viewRecord() { 
+if (list.isEmpty()) { 
+System.out.println("No records available."); 
+} else { 
+System.out.println("Name | RNo | Avg Marks | Grade"); 
+ for (Student s : list) { 
+ System.out.println(s.name + "|" + s.rno + "|" + s.avg_marks + "|" + s.grade); 
+ } 
+ } 
+ } 
+ // Delete record 
+ public void deleteRecord(int index) { 
+ if (index < 0 || index >= list.size()) { 
+ System.out.println("Invalid index! Cannot delete."); 
+ } else { 
+ System.out.println("Deleted Record: " + list.remove(index)); 
+ } 
+ } 
+ // Update record 
+ public void updateRecord(int index, double avg_marks, String grade) { 
+ if (index < 0 || index >= list.size()) { 
+ System.out.println("Invalid index! Cannot update."); 
+ } else { 
+ Student s = list.get(index); 
+ s.avg_marks = avg_marks; 
+ s.grade = grade; 
+ System.out.println("Record updated: " + s); 
+ } 
+ } 
+ // Search record by name 
+ public void searchRecord(String name) { 
+ boolean found = false; 
+ for (Student s : list) { 
+ if (s.name.equalsIgnoreCase(name)) { 
+ System.out.println("Found: " + s); 
+ found = true; 
+ } 
+ } 
+ if (!found) { 
+ System.out.println("No record found with the name: " + name); 
+ } 
+ } 
+ // Save records to file 
+ public void saveFile(String filename) { 
+ try (PrintWriter pw = new PrintWriter(new FileWriter(filename))) { 
+ for (Student s : list) { 
+ pw.println(s.name + "|" + s.rno + "|" + s.avg_marks + "|" + s.grade); 
+ } 
+ System.out.println("Records saved to " + filename); 
+} catch (IOException e) { 
+System.out.print(e.getMessage()); 
+} 
+} 
+// Load records from file 
+public void loadFile(String filename) { 
+File file = new File(filename); 
+if (!file.exists()) { 
+System.out.println("Error: File not found."); 
+return; 
+} 
+try (BufferedReader br = new BufferedReader(new FileReader(file))) { 
+String line; 
+while ((line = br.readLine()) != null) { 
+String[] parts = line.split(","); 
+if (parts.length == 4) { 
+String name = parts[0]; 
+int rno = Integer.parseInt(parts[1]); 
+double avg_marks = Double.parseDouble(parts[2]); 
+String grade = parts[3]; 
+list.add(new Student(name, rno, avg_marks, grade)); 
+} 
+} 
+System.out.println("Records loaded successfully from " + filename); 
+} catch (IOException e) { 
+System.out.println("Error reading file: " + e.getMessage()); 
+} catch (NumberFormatException e) { 
+System.out.println("Error in file format: " + e.getMessage()); 
+} 
+} 
+} 
+public class Main2 { 
+//Main Method 
+public static void main(String[] args) { 
+String name; 
+int rno; 
+double avg_marks; 
+String grade; 
+Record sr = new Record(); 
+Scanner sc = new Scanner(System.in); 
+int choice; 
+int n; 
+do { 
+System.out.println("---Student Record---"); 
+System.out.println("1. Add record"); 
+System.out.println("2. View records"); 
+System.out.println("3. Delete record"); 
+System.out.println("4. Update record"); 
+System.out.println("5. Search record by name"); 
+System.out.println("6. Save records to file"); 
+System.out.println("7. Load one file into another"); 
+System.out.println("8. Exit"); 
+System.out.print("Enter your choice: "); 
+choice = sc.nextInt(); 
+sc.nextLine(); 
+switch (choice) { 
+case 1: 
+System.out.print("How many records do you want to add? :"); 
+n = sc.nextInt(); 
+sc.nextLine(); 
+System.out.println("~~~Add record~~~"); 
+for (int i = 0; i < n; i++) { 
+System.out.println("Record No." + (i + 1)); 
+System.out.print("Enter name: "); 
+name = sc.nextLine(); 
+System.out.print("Enter roll_no: "); 
+rno = sc.nextInt(); 
+System.out.print("Enter avg marks: "); 
+avg_marks = sc.nextDouble(); 
+sc.nextLine(); 
+System.out.print("Enter Grade: "); 
+grade = sc.nextLine(); 
+sr.addRecord(name, rno, avg_marks, grade); 
+System.out.println("Record added successfully\n"); 
+} 
+break; 
+case 2: 
+System.out.println("~~~View Records~~~"); 
+sr.viewRecord(); 
+System.out.println(); 
+break; 
+case 3: 
+System.out.print("Enter record index to delete:"); 
+int delIndex = sc.nextInt(); 
+sr.deleteRecord(delIndex); 
+break; 
+case 4: 
+System.out.print("Enter record index to update:"); 
+int upIndex = sc.nextInt(); 
+System.out.print("Enter new avg marks:"); 
+avg_marks = sc.nextDouble(); 
+sc.nextLine(); 
+System.out.print("Enter new grade:"); 
+grade = sc.nextLine(); 
+sr.updateRecord(upIndex, avg_marks, grade); 
+break; 
+case 5: 
+System.out.print("Enter name to search:"); 
+name = sc.nextLine(); 
+sr.searchRecord(name); 
+break; 
+case 6: 
+System.out.print("Enter filename to save records:"); 
+String sf = sc.nextLine(); 
+sr.saveFile(sf); 
+break; 
+case 7: 
+System.out.print("Enter filename to load records:"); 
+String lf = sc.nextLine(); 
+sr.loadFile(lf); 
+break; 
+case 8: 
+System.out.println("Exiting the program..."); 
+break; 
+default: 
+System.out.println("Invalid choice"); 
+} 
+} while (choice != 8); 
+sc.close(); 
+} 
+}
