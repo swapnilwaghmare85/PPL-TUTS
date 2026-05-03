@@ -1,0 +1,59 @@
+package foodDelivery; 
+import java.util.*; 
+class Orders {  
+int OrderID; 
+String custName, Orderitem; 
+public Orders(int OrderID, String custName, String Orderitem) { 
+this.OrderID = OrderID; 
+this.custName = custName; 
+this.Orderitem = Orderitem; 
+} 
+} 
+class DeliveryAgent implements Runnable {  
+private Orders[] orderArray; 
+private static int currentIndex = 0; 
+public DeliveryAgent(Orders[] orderArray) { 
+this.orderArray = orderArray; 
+} 
+public void run() {  
+while (currentIndex < orderArray.length) { 
+Orders currentOrder = orderArray[currentIndex]; 
+currentIndex++; 
+System.out.println(Thread.currentThread().getName() 
++ " is delivering: " + currentOrder.Orderitem 
++ " for " + currentOrder.custName); 
+try { 
+Thread.sleep(1000); 
+} catch (Exception e) {} 
+System.out.println("Status: Order #" + currentOrder.OrderID + 
+":"+currentOrder.Orderitem+" Delivered!"); 
+System.out.println("-----------------------------------"); 
+} 
+} 
+} 
+public class FoodDeliverySystem {  
+public static void main(String[] args) { 
+Scanner sc = new Scanner(System.in); 
+System.out.print("How many orders to place? "); 
+int n = sc.nextInt(); 
+//Class 
+//Runnable Interface 
+//run() method 
+//Main Class 
+sc.nextLine(); 
+Orders[] orderArray = new Orders[n]; 
+for (int i = 0; i < n; i++) { 
+System.out.println("Enter details for order " + (i + 1)); 
+System.out.print("Customer Name: "); 
+String name = sc.nextLine(); 
+System.out.print("Food: "); 
+String food = sc.nextLine(); 
+orderArray[i] = new Orders(101 + i, name, food); 
+} 
+DeliveryAgent agentTask = new DeliveryAgent(orderArray); 
+Thread t1 = new Thread(agentTask, "Agent-1"); 
+Thread t2 = new Thread(agentTask, "Agent-2"); 
+t1.start();  
+t2.start();  
+} 
+} 
